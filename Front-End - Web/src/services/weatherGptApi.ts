@@ -164,13 +164,24 @@ export async function fetchWeatherAlertsApi(cityOrLocation: string): Promise<any
  * Live Route Weather Discovery Endpoint
  */
 export async function fetchRouteWeatherApi(source: string, destination: string): Promise<any> {
-  const url = `${ROUTE_WEATHER_ENDPOINT}?source=${encodeURIComponent(source)}&destination=${encodeURIComponent(destination)}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    const errBody = await response.json().catch(() => ({}));
-    throw new Error(errBody?.message || errBody?.error || `Failed to calculate route weather from ${source} to ${destination}`);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
+  try {
+    const url = `${ROUTE_WEATHER_ENDPOINT}?source=${encodeURIComponent(source)}&destination=${encodeURIComponent(destination)}`;
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      throw new Error(errBody?.message || errBody?.error || `Failed to calculate route weather from ${source} to ${destination}`);
+    }
+    return await response.json();
+  } catch (err: any) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('Backend route weather request timed out after 4 seconds');
+    }
+    throw err;
   }
-  return await response.json();
 }
 
 /**
