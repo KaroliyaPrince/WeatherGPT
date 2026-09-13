@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WeatherGPT - 5-Minute Viva Quick Revision Guide</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm 12mm 12mm 12mm;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
+            color: #0f172a;
+            line-height: 1.45;
+            margin: 0;
+            padding: 0;
+            font-size: 10pt;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 18pt;
+            font-weight: 800;
+        }
+        .header p {
+            margin: 3px 0 0 0;
+            font-size: 9.5pt;
+            opacity: 0.9;
+        }
+        .badge-pill {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 8.5pt;
+            font-weight: bold;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 10px 12px;
+            page-break-inside: avoid;
+        }
+        .card-title {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+        }
+        ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+        li {
+            margin-bottom: 4px;
+        }
+        .highlight {
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .qa-item {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+        .qa-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .q {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 9.5pt;
+        }
+        .a {
+            color: #334155;
+            font-size: 9pt;
+            margin-top: 2px;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <h1>🌦️ WeatherGPT: Viva Cheat-Sheet</h1>
+            <p>Rapid 5-Minute Revision for External Evaluation</p>
+        </div>
+        <div class="badge-pill">⚡ Viva Quick Read</div>
+    </div>
+
+    <!-- 1. ELEVATOR PITCH -->
+    <div class="card" style="margin-bottom: 12px; background: #eff6ff; border-left: 4px solid #2563eb;">
+        <div class="card-title" style="color: #1e40af;">🎯 30-Second Elevator Pitch (Memorize This!)</div>
+        <p style="margin: 0; font-size: 9.5pt;">
+            <em>"WeatherGPT is an AI-powered meteorological & disaster intelligence platform that converts raw weather numbers into actionable everyday advice. It features a 2-way real-time voice assistant in 22+ Indian languages with live spoken word highlighting, an AI Sky Camera (Weather Lens) to predict rain from cloud photos, interactive 3D WebGL radar maps, and domain-specific advisories for farmers, travelers, and coastal fishermen."</em>
+        </p>
+    </div>
+
+    <div class="grid">
+        <!-- 2. TECH STACK -->
+        <div class="card">
+            <div class="card-title">💻 Technology Stack</div>
+            <ul>
+                <li><strong>Frontend:</strong> React 19, TypeScript, Vite, Tailwind CSS</li>
+                <li><strong>3D Graphics:</strong> Three.js (WebGL), <code>THREE.Timer</code></li>
+                <li><strong>Mapping:</strong> Leaflet, OpenStreetMap, Nominatim Geocoding</li>
+                <li><strong>Voice / Audio:</strong> Web Speech API, HTML5 Audio, Web Audio</li>
+                <li><strong>Backend:</strong> Node.js / Express hosted on Render</li>
+                <li><strong>AI Engine:</strong> Google Gemini API for meteorological reasoning & vision</li>
+            </ul>
+        </div>
+
+        <!-- 3. TOP 5 KILLER FEATURES -->
+        <div class="card">
+            <div class="card-title">🚀 Top 5 Features to Highlight</div>
+            <ul>
+                <li><strong>1. 2-Way Voice Call:</strong> Speak in Gujarati/Hindi/English; AI answers aloud with synced real-time word highlighting and auto-scrolling.</li>
+                <li><strong>2. Weather Lens:</strong> Snap a sky/cloud photo to get cloud type classification and instant rain risk %.</li>
+                <li><strong>3. Kisan Advisory:</strong> Crop spray windows, soil moisture & harvest warnings for farmers.</li>
+                <li><strong>4. Interactive Radar:</strong> Click any map coordinate to calculate rainfall in inches.</li>
+                <li><strong>5. Travel Safety:</strong> Transit hazard score between source and destination.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 4. KEY TECHNICAL PROBLEMS SOLVED -->
+    <div class="card" style="margin-bottom: 12px;">
+        <div class="card-title">⚙️ 3 Critical Engineering Challenges Solved</div>
+        <ul>
+            <li><strong>Vercel 10s Timeout Fix:</strong> Serverless functions timeout after 10s. We implemented direct client-side fetch from browser to Render backend (<code>https://weathergpt-backend-46or.onrender.com</code>), eliminating proxies and stream corruption.</li>
+            <li><strong>Audio Lifecycle Management:</strong> Added <code>stopAllAudio()</code> with refs to pause, reset <code>currentTime=0</code>, revoke Object URLs, and cancel Web Speech immediately on modal close/unmount.</li>
+            <li><strong>User Privacy & History Isolation:</strong> Scoped all chat sessions by authenticated Gmail (<code>weathergpt_sessions_v3_&lt;email&gt;</code>) so switching Google accounts completely isolates history.</li>
+        </ul>
+    </div>
+
+    <!-- 5. TOP VIVA QUESTIONS & INSTANT ANSWERS -->
+    <div class="card">
+        <div class="card-title">🎓 Top Viva Questions & Instant Answers</div>
+        
+        <div class="qa-item">
+            <div class="q">Q1: How is WeatherGPT different from normal weather apps?</div>
+            <div class="a"><strong>Ans:</strong> Normal apps show raw data (e.g. 70% humidity); WeatherGPT explains what that means in plain language—telling farmers when to spray crops and travelers which highways to avoid.</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="q">Q2: How does the real-time spoken word highlighting work?</div>
+            <div class="a"><strong>Ans:</strong> <code>SpokenTextRenderer</code> breaks text into word tokens. <code>onboundary</code> / <code>timeupdate</code> events track the active character index, apply an animated pill highlight, and call <code>scrollIntoView({ behavior: 'smooth', block: 'center' })</code>.</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="q">Q3: How does Weather Lens analyze cloud images?</div>
+            <div class="a"><strong>Ans:</strong> It encodes the captured photo to Base64, sends it directly to our Vision AI endpoint on Render, and receives cloud classification (Cumulonimbus/Cirrus) and rain risk percentage.</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="q">Q4: How did you implement multi-lingual support?</div>
+            <div class="a"><strong>Ans:</strong> We created localized JSON schema dictionaries for all 22 official Indian languages and dynamically configure speech synthesis utterance languages (e.g. <code>gu-IN</code>, <code>hi-IN</code>, <code>en-IN</code>).</div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 10px; font-size: 8.5pt; color: #64748b;">
+        <strong>Live Demo:</strong> weather-gpt-tau.vercel.app &nbsp;|&nbsp; <strong>GitHub:</strong> github.com/sharaddetroja/WeatherGPT-
+    </div>
+
+</body>
+</html>

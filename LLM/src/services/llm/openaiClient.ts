@@ -1,0 +1,239 @@
+import OpenAI from 'openai';
+import axios from 'axios';
+import { env } from '../../config/env.js';
+import { logger } from '../../utils/logger.js';
+
+export class OpenAIClientWrapper {
+  private client: OpenAI | null = null;
+  private fallbackClients: OpenAI[] = [];
+  private modelName: string = env.LLM_MODEL;
+  private geminiDirectKey: string | null = null;
+  private providerName: string = 'none';
+
+  constructor() {
+    this.initClient();
+  }
+
+  private initClient(): void {
+    const rawOpenAI = (env.OPENAI_API_KEY || '').trim();
+    const rawGroq = (env.GROQ_API_KEY || '').trim();
+    const rawOpenRouter = (env.OPENROUTER_API_KEY || '').trim();
+    const rawGemini = (env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim();
+
+    // Google Gemini keys start with 'AQ.' (modern 2024-2026 format) or 'AIza' (classic format)
+    const isGeminiFormat = (k: string) =>
+      k.startsWith('AQ.') ||
+      k.startsWith('AIza') ||
+      (!k.startsWith('sk-') && !k.startsWith('gsk_') && k.length >= 25);
+
+    // 1. Check if ANY key is a Google Gemini API Key
+    let effectiveGeminiKey = rawGemini;
+    if (!effectiveGeminiKey && isGeminiFormat(rawOpenAI) && rawOpenAI !== 'your_openai_api_key_here') {
+      effectiveGeminiKey = rawOpenAI;
+      logger.info('Detected Google Gemini API key (AQ./AIza format) in OPENAI_API_KEY. Routing to Gemini.');
+    } else if (!effectiveGeminiKey && isGeminiFormat(rawGroq)) {
+      effectiveGeminiKey = rawGroq;
+    }
+
+    if (effectiveGeminiKey) {
+      this.geminiDirectKey = effectiveGeminiKey;
+      this.providerName = 'gemini';
+      this.modelName = env.LLM_MODEL && !env.LLM_MODEL.startsWith('gpt') ? env.LLM_MODEL : 'gemini-3.6-flash';
+      
+      try {
+        this.client = new OpenAI({
+          apiKey: effectiveGeminiKey,
+          baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai',
+          maxRetries: 0
+        });
+        logger.info(`Google Gemini Client initialized with model: ${this.modelName}`);
+      } catch (err) {
+        logger.warn('Failed to initialize Gemini OpenAI adapter, direct REST will be used:', err);
+      }
+      return;
+    }
+
+    // 2. Real OpenAI key (does not start with AIza)
+    if (rawOpenAI && !rawOpenAI.startsWith('AIza') && rawOpenAI !== 'your_openai_api_key_here') {
+      this.client = new OpenAI({
+        apiKey: rawOpenAI,
+        baseURL: env.OPENAI_BASE_URL,
+        maxRetries: 0
+      });
+      this.modelName = env.LLM_MODEL || 'gpt-4o-mini';
+      this.providerName = 'openai';
+      logger.info(`OpenAI Client initialized with base URL: ${env.OPENAI_BASE_URL}`);
+      return;
+    }
+
+    // 3. Groq
+    if (rawGroq) {
+      this.client = new OpenAI({
+        apiKey: rawGroq,
+        baseURL: 'https://api.groq.com/openai/v1'
+      });
+      this.modelName = env.LLM_MODEL !== 'gpt-4o-mini' ? env.LLM_MODEL : 'llama-3.3-70b-versatile';
+      this.providerName = 'groq';
+      logger.info('Groq Client initialized successfully');
+      return;
+    }
+
+    // 4. OpenRouter
+    if (rawOpenRouter) {
+      this.client = new OpenAI({
+        apiKey: rawOpenRouter,
+        baseURL: 'https://openrouter.ai/api/v1'
+      });
+      this.modelName = env.LLM_MODEL !== 'gpt-4o-mini' ? env.LLM_MODEL : 'google/gemini-2.0-flash-lite-preview-02-05:free';
+      this.providerName = 'openrouter';
+
+      const extraKeys = [env.OPENROUTER_API_KEY_2, env.OPENROUTER_API_KEY_3].filter(Boolean) as string[];
+      for (const k of extraKeys) {
+        if (k.trim() !== '') {
+          this.fallbackClients.push(new OpenAI({
+            apiKey: k.trim(),
+            baseURL: 'https://openrouter.ai/api/v1'
+          }));
+        }
+      }
+
+      logger.info(`OpenRouter Client initialized successfully with ${this.fallbackClients.length} fallback keys`);
+      return;
+    }
+
+    logger.warn('No valid LLM API Key set. LLM service will operate with rule-based fallback generator.');
+  }
+
+  isConfigured(): boolean {
+    return this.client !== null || this.geminiDirectKey !== null;
+  }
+
+  getProviderInfo() {
+    return {
+      provider: this.providerName,
+      model: this.modelName,
+      isConfigured: this.isConfigured()
+    };
+  }
+
+  async listGeminiModels(): Promise<unknown> {
+    if (!this.geminiDirectKey) {
+      throw new Error('No Gemini key configured');
+    }
+    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(this.geminiDirectKey.trim())}`;
+    const res = await axios.get(url, {
+      headers: {
+        'x-goog-api-key': this.geminiDirectKey.trim()
+      }
+    });
+    return res.data;
+  }
+
+  async testDirectModel(modelName: string, thinkingLevel?: string): Promise<unknown> {
+    if (!this.geminiDirectKey) {
+      throw new Error('No Gemini key configured');
+    }
+    const cleanKey = this.geminiDirectKey.trim();
+    const cleanModel = modelName.replace(/^models\//, '');
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${encodeURIComponent(cleanKey)}`;
+    const payload: Record<string, unknown> = {
+      contents: [{ role: 'user', parts: [{ text: 'Hello! Respond with: "OK: ' + cleanModel + '"' }] }],
+      generationConfig: {
+        maxOutputTokens: 150,
+        ...(thinkingLevel ? { thinkingConfig: { thinkingLevel } } : {})
+      }
+    };
+    const res = await axios.post(url, payload, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': cleanKey
+      },
+      timeout: 30000
+    });
+    return res.data;
+  }
+
+  async generateChatCompletion(
+    systemPrompt: string,
+    userPrompt: string,
+    jsonMode = false
+  ): Promise<string> {
+    if (!this.isConfigured()) {
+      throw new Error('OPENAI_CLIENT_NOT_CONFIGURED');
+    }
+
+    let geminiNativeError: string | null = null;
+    let openAiError: string | null = null;
+
+    // 1. If Gemini direct key is available, try native Google Gemini REST API first!
+    if (this.geminiDirectKey) {
+      try {
+        const text = await this.callGeminiNative(this.geminiDirectKey, systemPrompt, userPrompt, jsonMode);
+        if (text && text.trim().length > 0) {
+          return text.trim();
+        }
+      } catch (geminiErr: unknown) {
+        const msg = geminiErr instanceof Error ? geminiErr.message : 'Gemini native REST error';
+        logger.warn(`Gemini native REST failed, trying OpenAI adapter fallback: ${msg}`);
+        geminiNativeError = msg;
+      }
+    }
+
+    // 2. Try OpenAI SDK (for OpenAI, Groq, OpenRouter, or Gemini OpenAI adapter)
+    if (this.client) {
+      const clientsToTry = [this.client, ...this.fallbackClients];
+      
+      for (let i = 0; i < clientsToTry.length; i++) {
+        const currentClient = clientsToTry[i];
+        try {
+          const response = await currentClient.chat.completions.create({
+            model: this.modelName,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt }
+            ],
+            temperature: 0.3,
+            ...(jsonMode ? { response_format: { type: 'json_object' } } : {})
+          });
+
+          const content = response.choices[0]?.message?.content || '';
+          if (content.trim().length > 0) {
+            return content.trim();
+          }
+        } catch (openAiErr: any) {
+          const msg = openAiErr instanceof Error ? openAiErr.message : 'LLM API error';
+          logger.error(`LLM SDK completion failed (${this.providerName}/${this.modelName}) with key index ${i}: ${msg}`);
+          openAiError = msg;
+
+          // If it's a 429 error and we have more clients, continue the loop
+          if (i < clientsToTry.length - 1 && (openAiErr?.status === 429 || msg.includes('429'))) {
+            logger.warn(`Switching to fallback LLM key ${i + 1} due to 429 quota error.`);
+            continue;
+          } else if (i < clientsToTry.length - 1) {
+             // If it's another error, also try falling back just in case
+             logger.warn(`Switching to fallback LLM key ${i + 1} due to error.`);
+             continue;
+          }
+        }
+      }
+    }
+
+    const fullErr = [
+      geminiNativeError ? `Native Gemini error: ${geminiNativeError}` : null,
+      openAiError ? `OpenAI SDK error: ${openAiError}` : null
+    ].filter(Boolean).join(' | ');
+
+    throw new Error(fullErr || 'LLM completion failed across all providers.');
+  }
+
+  private async callGeminiNative(
+    apiKey: string,
+    systemPrompt: string,
+    userPrompt: string,
+    jsonMode: boolean
+  ): Promise<string> {
+    throw new Error('Native Gemini REST API is deprecated in 2026. Using OpenAI compatibility layer.');
+  }
+}
+
+export const openAIClient = new OpenAIClientWrapper();

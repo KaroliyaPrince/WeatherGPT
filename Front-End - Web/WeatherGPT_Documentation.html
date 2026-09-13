@@ -1,0 +1,391 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WeatherGPT Project Documentation</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 15mm 20mm 15mm;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            font-size: 11pt;
+        }
+        .cover-page {
+            page-break-after: always;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 40px;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0effe 100%);
+        }
+        .cover-title {
+            font-size: 32pt;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        .cover-subtitle {
+            font-size: 16pt;
+            color: #3b82f6;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        .cover-desc {
+            font-size: 12pt;
+            color: #475569;
+            max-width: 600px;
+            margin-bottom: 50px;
+            line-height: 1.8;
+        }
+        .cover-meta {
+            margin-top: auto;
+            border-top: 1px solid #bfdbfe;
+            padding-top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            font-size: 10pt;
+            color: #334155;
+        }
+        h1 {
+            font-size: 18pt;
+            color: #1e3a8a;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 6px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            page-break-after: avoid;
+        }
+        h2 {
+            font-size: 14pt;
+            color: #2563eb;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+        h3 {
+            font-size: 12pt;
+            color: #1e293b;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            page-break-after: avoid;
+        }
+        p, li {
+            text-align: justify;
+            margin-bottom: 8px;
+        }
+        ul, ol {
+            padding-left: 22px;
+            margin-bottom: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 9.5pt;
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .callout {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 12px 16px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 10pt;
+        }
+        .badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 8.5pt;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .qa-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            page-break-inside: avoid;
+        }
+        .question {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+        .answer {
+            color: #334155;
+            font-size: 10pt;
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 9pt;
+            color: #94a3b8;
+            margin-top: 30px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 10px;
+        }
+        code {
+            background: #f1f5f9;
+            color: #be185d;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 9pt;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COVER PAGE -->
+    <div class="cover-page">
+        <div style="font-size: 40pt; margin-bottom: 10px;">🌦️</div>
+        <div class="cover-title">WeatherGPT</div>
+        <div class="cover-subtitle">Next-Generation AI Meteorological & Disaster Intelligence Platform</div>
+        <div class="cover-desc">
+            A comprehensive, multi-lingual, AI-powered weather forecasting and natural disaster decision-support system featuring 2-way real-time voice intelligence, AI cloud vision (Weather Lens), localized agriculture advisories, and interactive 3D WebGL radar telemetry.
+        </div>
+        <div class="cover-meta">
+            <div><strong>Project:</strong> WeatherGPT Full-Stack AI</div>
+            <div><strong>Domain:</strong> AI / WebGL / Atmospheric Intelligence</div>
+            <div><strong>Status:</strong> Production-Ready</div>
+        </div>
+    </div>
+
+    <!-- 1. EXECUTIVE SUMMARY -->
+    <h1>1. Executive Summary</h1>
+    <p>
+        <strong>WeatherGPT</strong> is a state-of-the-art meteorological intelligence platform engineered to bridge the critical divide between complex numerical atmospheric science and actionable human decision-making. While conventional weather applications present disconnected metrics (humidity, dew point, atmospheric pressure) requiring manual user interpretation, WeatherGPT utilizes Large Language Model (LLM) reasoning and Computer Vision to deliver proactive, domain-specific guidance.
+    </p>
+    <p>
+        The platform provides hyper-localized agriculture advisories (Kisan Mitra), road safety transit assessments, coastal and cyclone hazard intelligence for fishermen, real-time AI sky camera classification (Weather Lens), and an interactive 2-way voice assistant supporting English and 22 scheduled Indian languages.
+    </p>
+
+    <!-- 2. SYSTEM ARCHITECTURE -->
+    <h1>2. System Architecture & Engineering Design</h1>
+    <p>
+        WeatherGPT is architected as a decoupled, high-performance client-server infrastructure built for ultra-low latency and resilience against cloud serverless timeouts:
+    </p>
+    <ul>
+        <li><strong>Client Architecture (SPA):</strong> Built with React 19, TypeScript, and Vite. Utilizes Tailwind CSS for glassmorphism theming and Three.js for 60 FPS 3D hardware-accelerated rendering.</li>
+        <li><strong>Direct Client-to-Backend Telemetry:</strong> All AI chat, voice synthesis, and vision inference requests bypass intermediate serverless proxies and connect directly from the user's browser to the dedicated Render backend API, entirely preventing 10-second serverless timeout terminations during long LLM inferences.</li>
+        <li><strong>Isolated User Scoping:</strong> Chat histories, user settings, and preferences are strictly partitioned per authenticated Google OAuth email (<code>weathergpt_sessions_v3_&lt;email&gt;</code>) to preserve absolute data privacy.</li>
+    </ul>
+
+    <!-- 3. TECHNOLOGY STACK -->
+    <h1>3. Technology Stack & Frameworks</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>Technologies</th>
+                <th>Role in Architecture</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Frontend Core</strong></td>
+                <td>React 19, TypeScript, Vite</td>
+                <td>Single Page Application (SPA), component lifecycle, type-safety</td>
+            </tr>
+            <tr>
+                <td><strong>Styling & UI</strong></td>
+                <td>Tailwind CSS, Lucide Icons, Glassmorphism</td>
+                <td>Responsive deep navy dark theme, frosted glass cards</td>
+            </tr>
+            <tr>
+                <td><strong>3D Graphics</strong></td>
+                <td>Three.js (WebGL), THREE.Timer</td>
+                <td>Interactive 3D Weather Globe, AI Voice Orb, Particle canvas</td>
+            </tr>
+            <tr>
+                <td><strong>Mapping & GIS</strong></td>
+                <td>Leaflet, React-Leaflet, OpenStreetMap, Nominatim</td>
+                <td>Interactive precipitation radar, click-to-estimate rainfall</td>
+            </tr>
+            <tr>
+                <td><strong>Speech & Audio</strong></td>
+                <td>HTML5 Audio, Web Audio, Web Speech API</td>
+                <td>Real-time voice dictation, neural TTS, progressive word highlight</td>
+            </tr>
+            <tr>
+                <td><strong>Backend Service</strong></td>
+                <td>Node.js / Express on Render</td>
+                <td>Meteorological data integration, Gemini AI LLM inference</td>
+            </tr>
+            <tr>
+                <td><strong>Deployment & CI/CD</strong></td>
+                <td>Vercel (Client), Render (API), GitHub</td>
+                <td>Continuous integration, automated builds, zero-downtime deploys</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 4. CORE MODULES -->
+    <h1>4. Detailed Module Specifications</h1>
+
+    <h2>4.1 Multi-Lingual AI Voice Assistant & Live Call</h2>
+    <p>
+        Provides a conversational 2-way voice interface. As the AI speaks, the <code>SpokenTextRenderer</code> dynamically highlights the active word in real time and smoothly auto-scrolls down to track speech progression. When the call is exited or modal closed, <code>stopAllAudio()</code> instantly halts speech synthesis and audio playback to prevent audio leaks.
+    </p>
+
+    <h2>4.2 Weather Lens (AI Sky & Cloud Camera)</h2>
+    <p>
+        Leverages Computer Vision to analyze cloud photographs uploaded or captured by user mobile cameras. The model classifies cloud formations (Cumulonimbus, Altostratus, Cirrus), measures cloud density percentage, and calculates instant rain probabilities.
+    </p>
+
+    <h2>4.3 Interactive Precipitation Radar & Map Telemetry</h2>
+    <p>
+        Displays interactive layers for precipitation, temperature, wind gusts, and cloud cover. Clicking any coordinate calculates localized rainfall estimates and reverse-geocodes the exact location name via Nominatim.
+    </p>
+
+    <h2>4.4 Kisan (Agriculture) Advisory Engine</h2>
+    <p>
+        Tailored agricultural intelligence for farmers. Analyzes soil moisture, evaporation rates, and rainfall windows to recommend optimal dates for pesticide spraying, fertilizer application, and crop harvesting.
+    </p>
+
+    <h2>4.5 Travel Weather Planner & Road Hazard Index</h2>
+    <p>
+        Calculates transit safety scores between departure and arrival cities, warning drivers in advance about crosswinds, low visibility, and flood-prone highway zones.
+    </p>
+
+    <!-- 5. LOCALIZATION & LANGUAGES -->
+    <h1>5. Indian Regional Language Support (22+ Languages)</h1>
+    <p>
+        To ensure maximum accessibility across rural and urban populations, WeatherGPT natively supports full UI and voice localization across 22 official Indian languages:
+    </p>
+    <div style="margin: 10px 0;">
+        <span class="badge">ગુજરાતી (Gujarati)</span>
+        <span class="badge">हिंदी (Hindi)</span>
+        <span class="badge">English</span>
+        <span class="badge">मરાઠી (Marathi)</span>
+        <span class="badge">বাংলা (Bengali)</span>
+        <span class="badge">தமிழ் (Tamil)</span>
+        <span class="badge">తెలుగు (Telugu)</span>
+        <span class="badge">ಕನ್ನಡ (Kannada)</span>
+        <span class="badge">മലയാളം (Malayalam)</span>
+        <span class="badge">ਪੰਜਾਬੀ (Punjabi)</span>
+        <span class="badge">ଓଡ଼ିଆ (Odia)</span>
+        <span class="badge">অসমীয়া (Assamese)</span>
+        <span class="badge">संस्कृतम् (Sanskrit)</span>
+        <span class="badge">नेपाली (Nepali)</span>
+        <span class="badge">اردو (Urdu)</span>
+        <span class="badge">मैथिली (Maithili)</span>
+        <span class="badge">संताली (Santali)</span>
+        <span class="badge">سنڌي (Sindhi)</span>
+        <span class="badge">डोगरी (Dogri)</span>
+        <span class="badge">कोंकणी (Konkani)</span>
+        <span class="badge">कश्मीरी (Kashmiri)</span>
+        <span class="badge">बड़ो (Bodo)</span>
+        <span class="badge">মৈতৈলোন্ (Manipuri)</span>
+    </div>
+
+    <!-- 6. API SPECIFICATIONS -->
+    <h1>6. API Endpoints & Telemetry Reference</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Endpoint Route</th>
+                <th>Method</th>
+                <th>Payload / Params</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>/api/ask</code></td>
+                <td><code>POST</code></td>
+                <td><code>{ question, location, conversationId }</code></td>
+                <td>Primary LLM weather intelligence inference endpoint</td>
+            </tr>
+            <tr>
+                <td><code>/api/weather</code></td>
+                <td><code>GET</code></td>
+                <td><code>?city=Rajkot</code></td>
+                <td>Fetches current, hourly, and 7-day meteorological forecast</td>
+            </tr>
+            <tr>
+                <td><code>/api/weather/lens</code></td>
+                <td><code>POST</code></td>
+                <td><code>{ imageBase64, question, location }</code></td>
+                <td>Vision analysis for cloud type & precipitation risk</td>
+            </tr>
+            <tr>
+                <td><code>/api/weather/compare</code></td>
+                <td><code>POST</code></td>
+                <td><code>{ locations: ["Rajkot", "Surat"] }</code></td>
+                <td>Simultaneous multi-city weather comparative analytics</td>
+            </tr>
+            <tr>
+                <td><code>/api/voice/speak</code></td>
+                <td><code>POST</code></td>
+                <td><code>{ text, language }</code></td>
+                <td>Neural text-to-speech audio stream generation</td>
+            </tr>
+            <tr>
+                <td><code>/api/disaster/alerts</code></td>
+                <td><code>GET</code></td>
+                <td><code>?location=Gujarat</code></td>
+                <td>Fetches active severe weather emergency advisories</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 7. VIVA & EVALUATION Q&A -->
+    <h1>7. External Evaluation & Viva Q&A Guide</h1>
+
+    <div class="qa-box">
+        <div class="question">Q1. What makes WeatherGPT superior to conventional weather apps?</div>
+        <div class="answer">Conventional apps display raw meteorological data points without real-world context. WeatherGPT integrates LLM contextual reasoning to translate numeric measurements into actionable guidance (e.g., whether to spray crops, travel safety indices, and multi-lingual voice guidance).</div>
+    </div>
+
+    <div class="qa-box">
+        <div class="question">Q2. How did you resolve cloud serverless timeouts for AI voice responses?</div>
+        <div class="answer">Serverless platforms (like Vercel) enforce a strict 10-second execution cap. We eliminated intermediate proxy hops by routing client fetch calls directly to our dedicated Render backend service, utilizing HTML5 Audio and Blob ObjectURLs for real-time binary streaming.</div>
+    </div>
+
+    <div class="qa-box">
+        <div class="question">Q3. How is user privacy and chat history managed across multiple logins?</div>
+        <div class="answer">Sessions are keyed dynamically to the authenticated Google OAuth email identifier (<code>weathergpt_sessions_v3_&lt;email&gt;</code>). When a user logs in or switches accounts, the client strictly retrieves and updates only their isolated session records.</div>
+    </div>
+
+    <div class="qa-box">
+        <div class="question">Q4. How is the real-time spoken word karaoke highlight accomplished?</div>
+        <div class="answer">The <code>SpokenTextRenderer</code> breaks text into token streams. During speech synthesis or HTML5 audio playback, word boundary events track character offsets, highlight active tokens with glowing pill styling, and trigger smooth auto-scrolling to keep the reading position centered.</div>
+    </div>
+
+    <div class="footer-note">
+        <strong>WeatherGPT Project Documentation</strong> • Live URL: <a href="https://weather-gpt-tau.vercel.app" style="color: #3b82f6;">weather-gpt-tau.vercel.app</a> • Repository: <a href="https://github.com/sharaddetroja/WeatherGPT-" style="color: #3b82f6;">github.com/sharaddetroja/WeatherGPT-</a>
+    </div>
+
+</body>
+</html>
